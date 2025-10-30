@@ -6,27 +6,8 @@ const categoriaRoutes = require('./src/routes/categoria.routes.js');
 const solicitudRoutes = require('./src/routes/solicitud.routes.js');
 const blogRoutes = require('./src/routes/blog.routes.js');
 
-const { Pool } = require('pg');
-
 const app = express();
 const port = process.env.PORT || 3000;
-
-
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-  family: 4,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
-
-module.exports = {
-  query: (text, params) => pool.query(text, params),
-};
 
 app.use(cors()); 
 /* const corsOptions = {
