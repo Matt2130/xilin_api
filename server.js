@@ -11,7 +11,7 @@ const port = process.env.PORT || 3000;
 
 
 const allowedOrigins = [
-  '[https://xilin-deployed.vercel.app](https://xilin-deployed.vercel.app)',
+  'https://xilin-deployed.vercel.app',
   'http://localhost:5173'
 ];
 app.use(cors({
