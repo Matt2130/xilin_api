@@ -10,31 +10,31 @@ const Blog = {
         b.titulo,
         SUBSTRING(b.contenido FROM 1 FOR 250) as contenido_corto,
         b.banner_url,
-        b.fecha_creacion,
+        b.fecha_publicacion AS fecha_publicacion,
         a.nombre as autor_nombre,
         COALESCE(a.foto_url, '/assets/img/default-author.png') as autor_foto_url
       FROM "Blog" b
       LEFT JOIN "Autor" a ON b.autor_id = a.id
-      ORDER BY b.fecha_creacion DESC
+      WHERE b.fecha_publicacion <= NOW()
+      ORDER BY b.fecha_publicacion DESC 
       LIMIT $1 OFFSET $2;
     `;
     
-    const totalQuery = 'SELECT COUNT(*) FROM "Blog"';
+    const totalQuery = 'SELECT COUNT(*) FROM "Blog" WHERE fecha_publicacion <= NOW()';
     
     const [postsResult, totalResult] = await Promise.all([
         db.query(text, [limit, offset]),
         db.query(totalQuery)
     ]);
-
     const totalPosts = parseInt(totalResult.rows[0].count, 10);
     const totalPages = Math.ceil(totalPosts / limit);
-
     return {
       posts: postsResult.rows,
       totalPages,
       currentPage: page,
     };
   },
+
   async getById(id) {
     const text = `
       SELECT
@@ -42,13 +42,13 @@ const Blog = {
         b.titulo,
         b.contenido,
         b.banner_url,
-        b.fecha_creacion,
+        b.fecha_publicacion AS fecha_publicacion, 
         a.nombre as autor_nombre,
         COALESCE(a.foto_url, '/assets/img/default-author.png') as autor_foto_url,
         a.puesto as autor_puesto
       FROM "Blog" b
       LEFT JOIN "Autor" a ON b.autor_id = a.id
-      WHERE b.id = $1;
+      WHERE b.id = $1 AND b.fecha_publicacion <= NOW();
     `;
     const { rows } = await db.query(text, [id]);
     return rows[0];

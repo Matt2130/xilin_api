@@ -9,12 +9,22 @@ const blogRoutes = require('./src/routes/blog.routes.js');
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors()); 
-/* const corsOptions = {
-  origin: 'https://montacargas-client.vercel.app' 
-};
-app.use(cors(corsOptions)); */
-// Middleware para que el servidor entienda JSON
+
+const allowedOrigins = [
+  '[https://xilin-deployed.vercel.app](https://xilin-deployed.vercel.app)',
+  'http://localhost:5173'
+];
+app.use(cors({
+  origin: function(origin, callback){
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){
+      const msg = 'La política de CORS para este sitio no permite acceso desde el origen especificado.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
+}));
+
 app.use(express.json());
 
 // Importar rutas
