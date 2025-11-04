@@ -2,19 +2,12 @@ const { validationResult } = require('express-validator');
 const Solicitud = require('../models/solicitud.model');
 const { google } = require('googleapis');
 
-const KEY_FILE_PATH = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-
-console.log('Ruta de credenciales de Google:', KEY_FILE_PATH);
-
-if (!KEY_FILE_PATH) {
-  console.error("¡ERROR FATAL! La variable de entorno GOOGLE_APPLICATION_CREDENTIALS no está definida.");
-  console.error("Asegúrate de que esté en tu archivo .env y que 'dotenv' se cargue primero.");
-}
+const KEY_FILE_PATH = '/etc/secrets/google-credentials.json';
 
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 
 const auth = new google.auth.GoogleAuth({
-    keyFile: KEY_FILE_PATH,
+    keyFile: KEY_FILE_PATH, 
     scopes: SCOPES,
 });
 
