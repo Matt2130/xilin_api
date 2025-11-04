@@ -3,6 +3,14 @@ const Solicitud = require('../models/solicitud.model');
 const { google } = require('googleapis');
 
 const KEY_FILE_PATH = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+
+console.log('Ruta de credenciales de Google:', KEY_FILE_PATH);
+
+if (!KEY_FILE_PATH) {
+  console.error("¡ERROR FATAL! La variable de entorno GOOGLE_APPLICATION_CREDENTIALS no está definida.");
+  console.error("Asegúrate de que esté en tu archivo .env y que 'dotenv' se cargue primero.");
+}
+
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 
 const auth = new google.auth.GoogleAuth({
@@ -33,7 +41,7 @@ const solicitudController = {
       const data = req.body;
 
       const newRow = [
-        new Date().toISOString(), // Fecha
+        new Date().toISOString(),
         data.nombre_cliente,
         data.email_cliente,
         data.telefono_cliente,
@@ -45,7 +53,7 @@ const solicitudController = {
 
       await sheets.spreadsheets.values.append({
         spreadsheetId,
-        range: 'Hoja 1!A1',
+        range: "'Hoja 1'!A1",
         valueInputOption: 'USER_ENTERED',
         resource: {
           values: [newRow],
